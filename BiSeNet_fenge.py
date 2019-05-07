@@ -1,3 +1,4 @@
+#https://blog.csdn.net/rainforestgreen/article/details/85157989
 class ConvBlock(torch.nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size=3, stride=2,padding=1):
         super().__init__()
