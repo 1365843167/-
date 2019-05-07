@@ -1,9 +1,25 @@
 # -*- coding:utf-8 -*-
 import torch.nn as nn
-from .SE_module import SELayer
+#from .SE_module import SELayer
 import torch.nn.functional as F
 
+class SELayer(nn.Module):
+    def __init__(self, channel, reduction=1):
+        super(SELayer, self).__init__()
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        self.fc = nn.Sequential(
+            nn.Linear(channel, channel // reduction),
+            nn.ReLU(inplace=True),
+            nn.Linear(channel // reduction, channel),
+            nn.Sigmoid()
+        )
 
+    def forward(self, x):
+        b, c, _, _ = x.size()
+        y = self.avg_pool(x).view(b, c)
+        y = self.fc(y).view(b, c, 1, 1)
+        return x * y
+    
 class Bottleneck(nn.Module):
     expansion = 4
 
